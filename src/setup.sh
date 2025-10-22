@@ -1,8 +1,17 @@
 #!/bin/sh
 # Setup script for Python projects created with `uv init`
-# Usage: curl -sSL https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/setup.sh | sh
+# Usage: curl -sSL https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/setup.sh -o setup.sh && sh setup.sh
 
 set -e
+
+# Cleanup function to remove temporary files and script itself
+cleanup() {
+    rm -f .config_setup.py
+    rm -f "$0"
+}
+
+# Set trap to cleanup on exit (success or failure)
+trap cleanup EXIT
 
 # Colors for output
 RED='\033[0;31m'
@@ -23,10 +32,10 @@ fi
 # Interactive prompts for author information
 echo "Please provide your information for the project:"
 printf "Author name: "
-read -r AUTHOR_NAME </dev/tty
+read -r AUTHOR_NAME
 
 printf "Author email: "
-read -r AUTHOR_EMAIL </dev/tty
+read -r AUTHOR_EMAIL
 
 echo ""
 echo "${YELLOW}Setting up project with:${NC}"
@@ -36,19 +45,8 @@ echo ""
 
 # Download the config.py script
 echo "${GREEN}Downloading configuration script...${NC}"
-CONFIG_SCRIPT_URL="https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/config.py"
-curl -sSL "$CONFIG_SCRIPT_URL" -o .setup_config.py
-
-# Replace placeholder values in the downloaded script
-sed -i.bak "s/AUTHOR_NAME = \"\"/AUTHOR_NAME = \"$AUTHOR_NAME\"/" .setup_config.py
-sed -i.bak "s/AUTHOR_EMAIL = \"\"/AUTHOR_EMAIL = \"$AUTHOR_EMAIL\"/" .setup_config.py
-rm -f .setup_config.py.bak
-
-# Check if Python is available
-if ! command -v python3 >/dev/null 2>&1; then
-    echo "${RED}Error: python3 is not installed${NC}"
-    exit 1
-fi
+CONFIG_SCRIPT_URL="https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/config_setup.py"
+curl -sSL "$CONFIG_SCRIPT_URL" -o .config_setup.py
 
 # Check if uv is available
 if ! command -v uv >/dev/null 2>&1; then
@@ -57,23 +55,9 @@ if ! command -v uv >/dev/null 2>&1; then
     exit 1
 fi
 
-# Run the configuration script
+# Run the configuration script with name and email as arguments
 echo "${GREEN}Running project setup...${NC}"
-python3 .setup_config.py
-
-# Clean up
-rm -f .setup_config.py
+python3 .config_setup.py "$AUTHOR_NAME" "$AUTHOR_EMAIL"
 
 echo ""
 echo "${GREEN}✓ Setup complete!${NC}"
-echo ""
-echo "Your project has been configured with:"
-echo "  - Development dependencies (ruff, pytest, pre-commit, etc.)"
-echo "  - Pre-commit hooks"
-echo "  - MIT License"
-echo "  - Updated pyproject.toml with author information"
-echo ""
-echo "Next steps:"
-echo "  1. Review the generated files"
-echo "  2. Run: ${YELLOW}git add .${NC}"
-echo "  3. Run: ${YELLOW}git commit -m 'Initial project setup'${NC}"

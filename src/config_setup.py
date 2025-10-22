@@ -2,6 +2,7 @@
 
 import datetime
 import subprocess
+import sys
 import tomllib
 from pathlib import Path
 
@@ -18,8 +19,14 @@ with pyproject_path.open("rb") as f:
 
 CURRENT_YEAR = datetime.datetime.now(tz=datetime.UTC).year
 PROJECT_NAME = pyproject_data.get("project", {}).get("name")
-AUTHOR_NAME = ""
-AUTHOR_EMAIL = ""
+
+# Get author info from command-line arguments
+if len(sys.argv) >= 3:
+    AUTHOR_NAME = sys.argv[1]
+    AUTHOR_EMAIL = sys.argv[2]
+else:
+    AUTHOR_NAME = ""
+    AUTHOR_EMAIL = ""
 
 lines = pyproject_path.read_text().splitlines()
 
