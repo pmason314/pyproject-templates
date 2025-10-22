@@ -25,7 +25,6 @@ ignore = [
     "FIX002",  # Avoid TODO comments
     "G004",    # Avoid f-strings in logging statements
     "PLR2004", # Avoid magic values in comparisons
-    "S101",    # Avoid assert statements
     "S603",    # Avoid subprocess calls without validated input (prone to false positives)
     "S607",    # Avoid starting a process with a partial executable path
     "TD002",   # Missing author in TODO comment
@@ -35,7 +34,7 @@ unfixable = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101"] # Allow assert statements in test files
+"tests/*" = ["INP001", "S101"] # Tests can have assert statements and no __init__.py files
 
 [tool.ruff.lint.pylint]
 max-args = 8
