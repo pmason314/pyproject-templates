@@ -57,7 +57,7 @@ fi
 
 # Run the configuration script with name and email as arguments
 echo "${GREEN}Running project setup...${NC}"
-python3 .config_setup.py "$AUTHOR_NAME" "$AUTHOR_EMAIL"
+uv venv && uv run .config_setup.py "$AUTHOR_NAME" "$AUTHOR_EMAIL"
 
 echo ""
 echo "${GREEN}✓ Setup complete!${NC}"
