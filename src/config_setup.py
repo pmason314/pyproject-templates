@@ -20,13 +20,26 @@ with pyproject_path.open("rb") as f:
 CURRENT_YEAR = datetime.datetime.now(tz=datetime.UTC).year
 PROJECT_NAME = pyproject_data.get("project", {}).get("name")
 
-# Get author info from command-line arguments
+# Get author info and license from command-line arguments
 if len(sys.argv) >= 3:
     AUTHOR_NAME = sys.argv[1]
     AUTHOR_EMAIL = sys.argv[2]
+    LICENSE_TYPE = sys.argv[3] if len(sys.argv) >= 4 else "None"
 else:
     AUTHOR_NAME = ""
     AUTHOR_EMAIL = ""
+    LICENSE_TYPE = "None"
+
+# Map license types to file names and SPDX identifiers
+LICENSE_INFO = {
+    "None": {"file": None, "spdx": None},
+    "MIT": {"file": "MIT.txt", "spdx": "MIT"},
+    "Apache-2.0": {"file": "Apache-2.0.txt", "spdx": "Apache-2.0"},
+    "GPLv3": {"file": "GPLv3.txt", "spdx": "GPL-3.0-or-later"},
+    "AGPLv3": {"file": "AGPLv3.txt", "spdx": "AGPL-3.0-or-later"},
+}
+
+license_info = LICENSE_INFO.get(LICENSE_TYPE, LICENSE_INFO["None"])
 
 lines = pyproject_path.read_text().splitlines()
 
@@ -37,8 +50,8 @@ except StopIteration as exc:
 
 indent = lines[readme_index][: len(lines[readme_index]) - len(lines[readme_index].lstrip())]
 authors_line = f'{indent}authors = [{{name = "{AUTHOR_NAME}", email = "{AUTHOR_EMAIL}"}}]'
-license_line = f'{indent}license = "MIT"'
-license_files_line = f'{indent}license-files = ["LICENSE"]'
+license_line = f'{indent}license = "{license_info["spdx"]}"' if license_info["spdx"] else None
+license_files_line = f'{indent}license-files = ["LICENSE"]' if license_info["file"] else None
 classifiers_line = f'{indent}classifiers = ["Programming Language :: Python :: 3","Natural Language :: English",]'
 
 insertion_index = readme_index + 1
@@ -46,10 +59,10 @@ insertion_index = readme_index + 1
 if not any(line.strip().startswith("authors") for line in lines):
     lines.insert(insertion_index, authors_line)
     insertion_index += 1
-if not any(line.strip().startswith("license") for line in lines):
+if license_line and not any(line.strip().startswith("license") for line in lines):
     lines.insert(insertion_index, license_line)
     insertion_index += 1
-if not any(line.strip().startswith("license-files") for line in lines):
+if license_files_line and not any(line.strip().startswith("license-files") for line in lines):
     lines.insert(insertion_index, license_files_line)
     insertion_index += 1
 if not any(line.strip().startswith("classifiers") for line in lines):
@@ -92,12 +105,6 @@ def replace_placeholders(paths: list[Path], replacements: dict[str, str]) -> Non
         file_path.write_text(content, encoding="utf-8")
 
 
-subprocess.run(
-    ["uv", "add", "--dev", "creosote", "ipykernel", "pre-commit", "pytest", "ruff"],
-    check=True,
-)
-subprocess.run(["pre-commit", "install"], check=False)
-
 fetch_to_file(
     "https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/pyproject_stub.toml",
     pyproject_path,
@@ -111,18 +118,21 @@ fetch_to_file(
     "https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/.gitignore",
     gitignore_path,
 )
-fetch_to_file(
-    "https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/licenses/MIT_LICENSE",
-    license_path,
-)
+
+# Download the license file if a license was selected
+if license_info["file"]:
+    license_url = (
+        f"https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/licenses/{license_info['file']}"
+    )
+    fetch_to_file(license_url, license_path)
+
+# Only include license_path in replacements if a license was selected
+paths_to_replace = [pyproject_path, precommit_path, gitignore_path]
+if license_info["file"]:
+    paths_to_replace.append(license_path)
 
 replace_placeholders(
-    [
-        pyproject_path,
-        precommit_path,
-        gitignore_path,
-        license_path,
-    ],
+    paths_to_replace,
     {
         "CURRENT_YEAR": str(CURRENT_YEAR),
         "PROJECT_NAME": PROJECT_NAME or "",

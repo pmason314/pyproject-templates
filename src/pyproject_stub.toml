@@ -1,3 +1,4 @@
+
 [build-system]
 requires      = ["uv_build"]
 build-backend = "uv_build"
@@ -56,3 +57,6 @@ sections = ["project.dependencies"]
 [tool.pyright]
 reportArgumentType      = false
 reportOptionalSubscript = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
