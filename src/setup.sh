@@ -45,7 +45,7 @@ fi
 
 if [ ! -f "pyproject.toml" ]; then
     echo "${RED}Error: pyproject.toml not found in the current directory${NC}"
-    echo "Please run this script from a Python project directory (after 'uv init')"
+    echo "Please run this script from either a completely empty directory or a Python project directory with a pyproject.toml, e.g. after 'uv init'"
     exit 1
 fi
 
@@ -106,8 +106,8 @@ curl -sSL "$CONFIG_SCRIPT_URL" -o .config_setup.py
 
 echo "${GREEN}Running project setup...${NC}"
 uv venv
-uv add --dev creosote ipykernel pre-commit pytest ruff >/dev/null 2>&1
-pre-commit install >/dev/null 2>&1
+uv add --dev creosote ipykernel pre-commit pytest ruff >/dev/null
+uv run pre-commit install >/dev/null
 echo "${GREEN}✓ Initial project dependencies installed${NC}"
 echo ""
 uv run .config_setup.py "$AUTHOR_NAME" "$AUTHOR_EMAIL" "$LICENSE"
