@@ -76,20 +76,20 @@ fi
 
 echo ""
 printf "\033]8;;https://choosealicense.com/licenses/\033\\Choose a license\033]8;;\033\\ for your project:\n"
-echo "  1) No License (default)"
-echo "  2) MIT"
-echo "  3) Apache 2.0"
-echo "  4) GPLv3"
-echo "  5) AGPLv3"
+echo "  1) MIT (default)"
+echo "  2) Apache 2.0"
+echo "  3) GPLv3"
+echo "  4) AGPLv3"
+echo "  5) None"
 printf "License choice [1]: "
 read -r LICENSE_CHOICE
 
 case "$LICENSE_CHOICE" in
-    2) LICENSE="MIT" ;;
-    3) LICENSE="Apache-2.0" ;;
-    4) LICENSE="GPLv3" ;;
-    5) LICENSE="AGPLv3" ;;
-    *) LICENSE="None" ;;
+    2) LICENSE="Apache-2.0" ;;
+    3) LICENSE="GPLv3" ;;
+    4) LICENSE="AGPLv3" ;;
+    5) LICENSE="None" ;;
+    *) LICENSE="MIT" ;;
 esac
 
 echo ""
@@ -106,11 +106,10 @@ curl -sSL "$CONFIG_SCRIPT_URL" -o .config_setup.py
 
 echo "${GREEN}Running project setup...${NC}"
 uv venv
-uv add --dev creosote ipykernel pre-commit pytest ruff >/dev/null
-uv run pre-commit install >/dev/null
+uv add --dev creosote ipykernel pre-commit pytest ruff >/dev/null 2>&1
+uv run pre-commit install >/dev/null 2>&1
 echo "${GREEN}✓ Initial project dependencies installed${NC}"
 echo ""
 uv run .config_setup.py "$AUTHOR_NAME" "$AUTHOR_EMAIL" "$LICENSE"
 
-echo ""
 echo "${GREEN}✓ Setup complete!${NC}"
