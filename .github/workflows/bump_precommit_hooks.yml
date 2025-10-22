@@ -1,0 +1,28 @@
+name: Bump pre-commit hook versions
+
+on:
+  schedule:
+    - cron: "0 0 1 * *" # Beginning of every month
+  workflow_dispatch:
+
+jobs:
+  bump-versions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: ".python-version"
+      - name: Run script to bump hook versions
+        run: bash bump-precommit-versions.sh
+      - name: Commit hook version changes
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: Bump pre-commit hook versions
+          commit_options: "--signoff"
+          commit_user_name: GitHub Actions Version Bot
+          commit_author: Peter Mason <peter@petermason.me>

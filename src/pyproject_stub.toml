@@ -11,9 +11,7 @@ line-length   = 120
 output-format = "concise"
 
 [tool.ruff.lint]
-select = [
-    "ALL",
-]
+select = ["ALL"]
 ignore = [
     "COM812",  # Missing trailing comma (conflicts with ruff's formatter)
     "D203",    # Missing blank line after class docstring (alternative to D211)
@@ -31,11 +29,13 @@ ignore = [
     "TD002",   # Missing author in TODO comment
     "TRY003",  # Avoid long exception messages outside the exception class
 ]
-unfixable = [
-]
+unfixable = []
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["INP001", "S101"] # Tests can have assert statements and no __init__.py files
+"tests/*" = [
+    "INP001",
+    "S101",
+] # Tests can have assert statements and no __init__.py files
 
 [tool.ruff.lint.pylint]
 max-args = 8
@@ -47,12 +47,11 @@ convention = "google"
 docstring-code-format = true
 
 [tool.creosote]
-exclude-deps = [
-]
-venvs = [".venv"]
-paths = ["PROJECT_NAME", "tests"]
-deps-file = "pyproject.toml"
-sections = ["project.dependencies"]
+exclude-deps = []
+venvs        = [".venv"]
+paths        = ["PROJECT_NAME", "tests"]
+deps-file    = "pyproject.toml"
+sections     = ["project.dependencies"]
 
 [tool.pyright]
 reportArgumentType      = false

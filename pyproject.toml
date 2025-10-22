@@ -1,14 +1,17 @@
 [project]
-name            = "pyproject-templates"
-version         = "0.1.0"
-description     = "A collection of configuration files and stubs for rapidly setting up a new Python project "
-readme          = "README.md"
-authors         = [{ name = "Peter Mason", email = "peter+gh@petermason.me" }]
-license         = "MIT"
-license-files   = ["LICENSE"]
-classifiers     = ["Programming Language :: Python :: 3", "Natural Language :: English"]
+name = "pyproject-templates"
+version = "0.1.0"
+description = "A collection of configuration files and stubs for rapidly setting up a new Python project."
+readme = "README.md"
+authors = [{ name = "Peter Mason", email = "peter+gh@petermason.me" }]
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Natural Language :: English",
+]
 requires-python = ">=3.14"
-dependencies    = []
+dependencies = []
 
 [dependency-groups]
 dev = [
@@ -27,9 +30,7 @@ line-length   = 120
 output-format = "concise"
 
 [tool.ruff.lint]
-select = [
-    "ALL",
-]
+select = ["ALL"]
 ignore = [
     "COM812",  # Missing trailing comma (conflicts with ruff's formatter)
     "D203",    # Missing blank line after class docstring (alternative to D211)
@@ -48,8 +49,7 @@ ignore = [
     "TD002",   # Missing author in TODO comment
     "TRY003",  # Avoid long exception messages outside the exception class
 ]
-unfixable = [
-]
+unfixable = []
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101"] # Allow assert statements in test files
@@ -64,12 +64,11 @@ convention = "google"
 docstring-code-format = true
 
 [tool.creosote]
-exclude-deps = [
-]
-venvs = [".venv"]
-paths = ["."]
-deps-file = "pyproject.toml"
-sections = ["project.dependencies"]
+exclude-deps = []
+venvs        = [".venv"]
+paths        = ["."]
+deps-file    = "pyproject.toml"
+sections     = ["project.dependencies"]
 
 [tool.pyright]
 reportArgumentType      = false

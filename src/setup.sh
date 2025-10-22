@@ -111,5 +111,5 @@ uv run pre-commit install >/dev/null 2>&1
 echo "${GREEN}✓ Initial project dependencies installed${NC}"
 echo ""
 uv run .config_setup.py "$AUTHOR_NAME" "$AUTHOR_EMAIL" "$LICENSE"
-
+uvx taplo fmt src/pyproject_stub.toml -o align_entries=true -o indent_string='    '
 echo "${GREEN}✓ Setup complete!${NC}"
