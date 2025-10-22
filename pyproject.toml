@@ -1,0 +1,76 @@
+[project]
+name            = "pyproject-templates"
+version         = "0.1.0"
+description     = "A collection of configuration files and stubs for rapidly setting up a new Python project "
+readme          = "README.md"
+authors         = [{ name = "Peter Mason", email = "peter+gh@petermason.me" }]
+license         = "MIT"
+license-files   = ["LICENSE"]
+classifiers     = ["Programming Language :: Python :: 3", "Natural Language :: English"]
+requires-python = ">=3.14"
+dependencies    = []
+
+[dependency-groups]
+dev = [
+    "creosote>=4.1.0",
+    "ipykernel>=7.0.1",
+    "pre-commit>=4.3.0",
+    "pytest>=8.4.2",
+    "ruff>=0.14.1",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length   = 120
+output-format = "concise"
+
+[tool.ruff.lint]
+select = [
+    "ALL",
+]
+ignore = [
+    "COM812",  # Missing trailing comma (conflicts with ruff's formatter)
+    "D203",    # Missing blank line after class docstring (alternative to D211)
+    "D213",    # Docstring summary should start on the second line (alternative to D212)
+    "EM",      # Assign exception strings to variables before raising them
+    "ERA",     # Avoid commented-out code; check during CI/CD instead
+    "F401",    # Avoid unused imports (check during pre-commit or CI/CD instead)
+    "FBT001",  # Avoid positional boolean arguments, checked via type hints
+    "FBT002",  # Avoid positional boolean arguments, checked via default values
+    "FIX002",  # Avoid TODO comments
+    "G004",    # Avoid f-strings in logging statements
+    "PLR2004", # Avoid magic values in comparisons
+    "S101",    # Avoid assert statements
+    "S603",    # Avoid subprocess calls without validated input (prone to false positives)
+    "S607",    # Avoid starting a process with a partial executable path
+    "TD002",   # Missing author in TODO comment
+    "TRY003",  # Avoid long exception messages outside the exception class
+]
+unfixable = [
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"] # Allow assert statements in test files
+
+[tool.ruff.lint.pylint]
+max-args = 8
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.creosote]
+exclude-deps = [
+]
+venvs = [".venv"]
+paths = ["."]
+deps-file = "pyproject.toml"
+sections = ["project.dependencies"]
+
+[tool.pyright]
+reportArgumentType      = false
+reportOptionalSubscript = false
