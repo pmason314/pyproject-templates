@@ -99,8 +99,6 @@ echo "  Email: $AUTHOR_EMAIL"
 echo "  License: $LICENSE"
 echo ""
 
-# Download and run config_setup.py with parameters passed in
-echo "${GREEN}Downloading configuration script...${NC}"
 CONFIG_SCRIPT_URL="https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/config_setup.py"
 curl -sSL "$CONFIG_SCRIPT_URL" -o .config_setup.py
 
@@ -111,5 +109,5 @@ uv run pre-commit install >/dev/null 2>&1
 echo "${GREEN}✓ Initial project dependencies installed${NC}"
 echo ""
 uv run .config_setup.py "$AUTHOR_NAME" "$AUTHOR_EMAIL" "$LICENSE"
-uvx taplo fmt src/pyproject_stub.toml -o align_entries=true -o indent_string='    '
+uvx taplo fmt src/pyproject_stub.toml -o align_entries=true -o indent_string="    " >/dev/null 2>&1
 echo "${GREEN}✓ Setup complete!${NC}"

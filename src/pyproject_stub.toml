@@ -10,7 +10,7 @@ module-root = ""
 line-length   = 120
 output-format = "concise"
 
-[tool.ruff.lint]
+[tool.ruff.lint] # Ruff linting rules found at https://docs.astral.sh/ruff/rules/
 select = ["ALL"]
 ignore = [
     "COM812",  # Missing trailing comma (conflicts with ruff's formatter)
@@ -32,10 +32,10 @@ ignore = [
 unfixable = []
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = [
+"tests/*" = [ # Tests can have assert statements and no __init__.py files
     "INP001",
     "S101",
-] # Tests can have assert statements and no __init__.py files
+]
 
 [tool.ruff.lint.pylint]
 max-args = 8
@@ -46,7 +46,7 @@ convention = "google"
 [tool.ruff.format]
 docstring-code-format = true
 
-[tool.creosote]
+[tool.creosote] # Creosote options found at https://github.com/fredrikaverpil/creosote?tab=readme-ov-file#%EF%B8%8F-configuration
 exclude-deps = []
 venvs        = [".venv"]
 paths        = ["PROJECT_NAME", "tests"]
@@ -57,5 +57,5 @@ sections     = ["project.dependencies"]
 reportArgumentType      = false
 reportOptionalSubscript = false
 
-[tool.pytest.ini_options]
+[tool.pytest.ini_options] # Pytest config options found at https://docs.pytest.org/en/stable/reference/customize.html
 testpaths = ["tests"]

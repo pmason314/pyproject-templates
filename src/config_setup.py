@@ -140,7 +140,7 @@ replace_placeholders(
     },
 )
 
-
+Path(".env").touch()
 Path(PROJECT_NAME).mkdir(exist_ok=True)
 Path(PROJECT_NAME, "__init__.py").touch()
 Path("tests").mkdir(exist_ok=True)
