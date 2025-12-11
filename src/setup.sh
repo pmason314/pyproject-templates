@@ -55,17 +55,15 @@ DEFAULT_EMAIL=$(git config --global user.email 2>/dev/null || echo "")
 
 echo "Please provide some project information:"
 echo ""
-echo "Is this a Python package or a standalone script?"
-echo "  1) Package (default - installable with dependencies)"
-echo "  2) Script (standalone application)"
+echo "Is this a Python script or a package?"
+echo "  1) Script (standalone file or small collection of files)"
+echo "  2) Package (installable and reusable module)"
 printf "Project type [1]: "
 read -r PROJECT_TYPE_CHOICE
-
 case "$PROJECT_TYPE_CHOICE" in
-    2) PROJECT_TYPE="script" ;;
-    *) PROJECT_TYPE="package" ;;
+    2) PROJECT_TYPE="package" ;;
+    *) PROJECT_TYPE="script" ;;
 esac
-echo ""
 if [ -n "$DEFAULT_NAME" ]; then
     printf "Author name [%s]: " "$DEFAULT_NAME"
 else

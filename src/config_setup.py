@@ -144,11 +144,11 @@ replace_placeholders(
 )
 
 Path(".env").touch()
-Path("tests").mkdir(exist_ok=True)
 
-# For packages, create src/package directory with __init__.py
+# For packages, create src/package directory with __init__.py and tests
 # For scripts, just keep the main.py in the root
 if PROJECT_TYPE == "package":
+    Path("tests").mkdir(exist_ok=True)
     Path("src").mkdir(exist_ok=True)
     Path("src", PROJECT_NAME).mkdir(exist_ok=True)
     Path("src", PROJECT_NAME, "__init__.py").touch()

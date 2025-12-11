@@ -17,9 +17,12 @@ ignore = [
     "FIX002",  # Avoid TODO comments
     "G004",    # Avoid f-strings in logging statements
     "PLR2004", # Avoid magic values in comparisons
+    "S101",    # Avoid assert statements
     "S603",    # Avoid subprocess calls without validated input (prone to false positives)
     "S607",    # Avoid starting a process with a partial executable path
+    "T201",    # Avoid using print()
     "TD002",   # Missing author in TODO comment
+    "TD003",   # Missing issue link in TODO comment
     "TRY003",  # Avoid long exception messages outside the exception class
 ]
 unfixable = []
