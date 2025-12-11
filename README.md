@@ -6,6 +6,8 @@ A streamlined setup script for creating fully configured Python projects out of 
 - [Overview and Features](#overview-and-features)
 - [Quick Start](#quick-start)
 - [Project Structure](#project-structure)
+  - [Package Mode](#package-mode)
+  - [Script Mode](#script-mode)
 - [Requirements](#requirements)
 - [Development Workflow](#development-workflow)
 - [Contributing](#contributing)
@@ -31,21 +33,41 @@ Run the setup script in either an empty directory or an existing project after r
 curl -sSL https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/setup.sh -o setup.sh && sh setup.sh
 ```
 
-You can also create an alias for the setup script for easier repeated use.  A couple examples:
+You can also create a shell function alias for easier repeated use:
 
 **Bash**
 
 ```bash
-echo 'alias pysetup="curl -sSL https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/setup.sh -o setup.sh && sh setup.sh"' >> ~/.bashrc && source ~/.bashrc
+cat >> ~/.bashrc << 'EOF'
+pysetup() {
+  if [ -n "$1" ]; then
+    mkdir -p "$1" && cd "$1" && curl -sSL https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/setup.sh -o setup.sh && sh setup.sh
+  else
+    curl -sSL https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/setup.sh -o setup.sh && sh setup.sh
+  fi
+}
+EOF
+source ~/.bashrc
 ```
 
 **Zsh**
 
 ```bash
-echo 'alias pysetup="curl -sSL https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/setup.sh -o setup.sh && sh setup.sh"' >> ~/.zshrc && source ~/.zshrc
+cat >> ~/.zshrc << 'EOF'
+pysetup() {
+  if [ -n "$1" ]; then
+    mkdir -p "$1" && cd "$1" && curl -sSL https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/setup.sh -o setup.sh && sh setup.sh
+  else
+    curl -sSL https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/setup.sh -o setup.sh && sh setup.sh
+  fi
+}
+EOF
+source ~/.zshrc
 ```
 
-Then simply call `pysetup` to run the setup script in your project directory.
+Usage:
+- `pysetup` - Run the setup script in the current directory
+- `pysetup new_project` - Create a new project directory, `cd` into it, then run the setup script
 
 To inspect the setup script before running it:
 ```bash
@@ -56,6 +78,7 @@ curl -sSL https://raw.githubusercontent.com/pmason314/pyproject-templates/main/s
 
 After running the setup script on a brand new project, your project will look like:
 
+### Package Mode
 ```
 your-project/
 ├── .git/
@@ -65,10 +88,24 @@ your-project/
 ├── .env
 ├── LICENSE (if selected)
 ├── pyproject.toml
-├── your-project/
-│   ├── __init__.py
-│   └── main.py
-└── tests/
+├── tests/
+└── src/
+    └── your-project/
+        ├── __init__.py
+        └── main.py
+```
+
+### Script Mode
+```
+your-project/
+├── .git/
+├── .gitignore
+├── .pre-commit-config.yaml
+├── .venv/
+├── .env
+├── LICENSE (if selected)
+├── pyproject.toml
+└── main.py
 ```
 
 ## Requirements
@@ -107,7 +144,7 @@ Additionally, pre-commit is automatically installed and several pre-commit hooks
 
 ## Contributing
 
-Contributions are welcome! Feel free to report bugs or suggest new features.
+Contributions are welcome! Feel free to report bugs or suggest new project templates.
 
 ## License
 
