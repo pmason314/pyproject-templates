@@ -4,7 +4,7 @@
 
 # Pre-commit dependency list
 deps=(pre-commit-hooks codespell ruff creosote)
-pc_path="src/.pre-commit-config.yaml"
+pc_paths=(".pre-commit-config.yaml" "src/templates/package/.pre-commit-config.yaml" "src/templates/script/.pre-commit-config.yaml")
 
 for hook in ${deps[@]}
 do
@@ -15,7 +15,12 @@ do
         hook="ruff-pre-commit"
     fi
     echo "Version $version found for $hook"
-    perl -0777pi -e "s/(?<=- repo: https:\/\/github.com\/.{1,50}$hook\s{1,10}rev: v?)([\d|\.]{1,20})/$version/g" "$pc_path" >/dev/null 2>&1
+    for pc_path in ${pc_paths[@]}
+    do
+        if [ -f "$pc_path" ]; then
+            perl -0777pi -e "s/(?<=- repo: https:\/\/github.com\/.{1,50}$hook\s{1,10}rev: v?)([\d|\.]{1,20})/$version/g" "$pc_path" >/dev/null 2>&1
+        fi
+    done
 done
 
 # Perl regex primer for sanity:

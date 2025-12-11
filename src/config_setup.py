@@ -20,15 +20,17 @@ with pyproject_path.open("rb") as f:
 CURRENT_YEAR = datetime.datetime.now(tz=datetime.UTC).year
 PROJECT_NAME = pyproject_data.get("project", {}).get("name")
 
-# Get author info and license from command-line arguments
-if len(sys.argv) >= 3:
+# Get author info, license, and project type from command-line arguments
+if len(sys.argv) >= 4:
     AUTHOR_NAME = sys.argv[1]
     AUTHOR_EMAIL = sys.argv[2]
-    LICENSE_TYPE = sys.argv[3] if len(sys.argv) >= 4 else "None"
+    LICENSE_TYPE = sys.argv[3]
+    PROJECT_TYPE = sys.argv[4] if len(sys.argv) >= 5 else "package"
 else:
     AUTHOR_NAME = ""
     AUTHOR_EMAIL = ""
     LICENSE_TYPE = "None"
+    PROJECT_TYPE = "package"
 
 # Map license types to file names and SPDX identifiers
 LICENSE_INFO = {
@@ -105,13 +107,14 @@ def replace_placeholders(paths: list[Path], replacements: dict[str, str]) -> Non
         file_path.write_text(content, encoding="utf-8")
 
 
+template_base_url = f"https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/templates/{PROJECT_TYPE}"
 fetch_to_file(
-    "https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/pyproject_stub.toml",
+    f"{template_base_url}/pyproject_stub.toml",
     pyproject_path,
     append=True,
 )
 fetch_to_file(
-    "https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/.pre-commit-config.yaml",
+    f"{template_base_url}/.pre-commit-config.yaml",
     precommit_path,
 )
 fetch_to_file(
@@ -141,10 +144,18 @@ replace_placeholders(
 )
 
 Path(".env").touch()
-Path(PROJECT_NAME).mkdir(exist_ok=True)
-Path(PROJECT_NAME, "__init__.py").touch()
 Path("tests").mkdir(exist_ok=True)
-if Path("main.py").exists():
-    Path("main.py").rename(Path(PROJECT_NAME, "main.py"))
-else:
-    Path(PROJECT_NAME, "main.py").touch()
+
+# For packages, create src/package directory with __init__.py
+# For scripts, just keep the main.py in the root
+if PROJECT_TYPE == "package":
+    Path("src").mkdir(exist_ok=True)
+    Path("src", PROJECT_NAME).mkdir(exist_ok=True)
+    Path("src", PROJECT_NAME, "__init__.py").touch()
+    if Path("main.py").exists():
+        Path("main.py").rename(Path("src", PROJECT_NAME, "main.py"))
+    else:
+        Path("src", PROJECT_NAME, "main.py").touch()
+elif not Path("main.py").exists():
+    # For scripts, ensure main.py exists in the root
+    Path("main.py").touch()

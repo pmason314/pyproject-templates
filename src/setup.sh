@@ -54,6 +54,18 @@ DEFAULT_NAME=$(git config --global user.name 2>/dev/null || echo "")
 DEFAULT_EMAIL=$(git config --global user.email 2>/dev/null || echo "")
 
 echo "Please provide some project information:"
+echo ""
+echo "Is this a Python package or a standalone script?"
+echo "  1) Package (default - installable with dependencies)"
+echo "  2) Script (standalone application)"
+printf "Project type [1]: "
+read -r PROJECT_TYPE_CHOICE
+
+case "$PROJECT_TYPE_CHOICE" in
+    2) PROJECT_TYPE="script" ;;
+    *) PROJECT_TYPE="package" ;;
+esac
+echo ""
 if [ -n "$DEFAULT_NAME" ]; then
     printf "Author name [%s]: " "$DEFAULT_NAME"
 else
@@ -94,6 +106,7 @@ esac
 
 echo ""
 echo "${YELLOW}Setting up project with:${NC}"
+echo "  Type: $PROJECT_TYPE"
 echo "  Name: $AUTHOR_NAME"
 echo "  Email: $AUTHOR_EMAIL"
 echo "  License: $LICENSE"
@@ -102,12 +115,20 @@ echo ""
 CONFIG_SCRIPT_URL="https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/config_setup.py"
 curl -sSL "$CONFIG_SCRIPT_URL" -o .config_setup.py
 
+TEMPLATE_BASE_URL="https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/templates/$PROJECT_TYPE"
+PYPROJECT_STUB_URL="$TEMPLATE_BASE_URL/pyproject_stub.toml"
+PRECOMMIT_CONFIG_URL="$TEMPLATE_BASE_URL/.pre-commit-config.yaml"
+
 echo "${GREEN}Running project setup...${NC}"
 uv venv
-uv add --dev creosote ipykernel pre-commit pytest ruff >/dev/null 2>&1
+if [ "$PROJECT_TYPE" = "package" ]; then
+    uv add --dev creosote ipykernel pre-commit pytest ruff >/dev/null 2>&1
+else
+    uv add --dev ipykernel pre-commit ruff >/dev/null 2>&1
+fi
 uv run pre-commit install >/dev/null 2>&1
 echo "${GREEN}✓ Initial project dependencies installed${NC}"
 echo ""
-uv run .config_setup.py "$AUTHOR_NAME" "$AUTHOR_EMAIL" "$LICENSE"
-uvx taplo fmt src/pyproject_stub.toml -o align_entries=true -o indent_string="    " >/dev/null 2>&1
+uv run .config_setup.py "$AUTHOR_NAME" "$AUTHOR_EMAIL" "$LICENSE" "$PROJECT_TYPE"
+uvx taplo fmt pyproject.toml -o align_entries=true -o indent_string="    " >/dev/null 2>&1
 echo "${GREEN}✓ Setup complete!${NC}"
