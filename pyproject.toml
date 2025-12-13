@@ -1,6 +1,6 @@
 [project]
 name = "pyproject-templates"
-version = "0.1.0"
+version = "0.1.1"
 description = "A collection of configuration files and stubs for rapidly setting up a new Python project."
 readme = "README.md"
 authors = [{ name = "Peter Mason", email = "peter+gh@petermason.me" }]
