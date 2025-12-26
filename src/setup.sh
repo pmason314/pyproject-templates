@@ -5,6 +5,7 @@
 set -e
 cleanup() {
     rm -f .config_setup.py
+    rm -f .dependencies.txt
     rm -f "$0"
 }
 
@@ -116,14 +117,16 @@ curl -sSL "$CONFIG_SCRIPT_URL" -o .config_setup.py
 TEMPLATE_BASE_URL="https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/templates/$PROJECT_TYPE"
 PYPROJECT_STUB_URL="$TEMPLATE_BASE_URL/pyproject_stub.toml"
 PRECOMMIT_CONFIG_URL="$TEMPLATE_BASE_URL/.pre-commit-config.yaml"
+DEPENDENCIES_URL="$TEMPLATE_BASE_URL/dependencies.txt"
 
 echo "${GREEN}Running project setup...${NC}"
 uv venv
-if [ "$PROJECT_TYPE" = "package" ]; then
-    uv add --dev creosote ipykernel pre-commit pytest ruff >/dev/null 2>&1
-else
-    uv add --dev ipykernel pre-commit ruff >/dev/null 2>&1
-fi
+
+# Download and install dependencies from config file
+curl -sSL "$DEPENDENCIES_URL" -o .dependencies.txt
+DEPENDENCIES=$(cat .dependencies.txt | tr '\n' ' ')
+
+uv add --dev $DEPENDENCIES >/dev/null 2>&1
 uv run pre-commit install >/dev/null 2>&1
 echo "${GREEN}✓ Initial project dependencies installed${NC}"
 echo ""

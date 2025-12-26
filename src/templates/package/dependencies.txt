@@ -1,0 +1,5 @@
+creosote
+ipykernel
+pre-commit
+pytest
+ruff
