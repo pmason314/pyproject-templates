@@ -43,16 +43,15 @@ convention = "google"
 [tool.ruff.format]
 docstring-code-format = true
 
+[tool.ty.terminal]
+output-format = "concise"
+
 [tool.creosote] # Creosote options found at https://github.com/fredrikaverpil/creosote?tab=readme-ov-file#%EF%B8%8F-configuration
 exclude-deps = []
 venvs        = [".venv"]
 paths        = ["src/PROJECT_NAME", "tests"]
 deps-file    = "pyproject.toml"
 sections     = ["project.dependencies"]
-
-[tool.pyright]
-reportArgumentType      = false
-reportOptionalSubscript = false
 
 [tool.pytest.ini_options] # Pytest config options found at https://docs.pytest.org/en/stable/reference/customize.html
 testpaths = ["tests"]

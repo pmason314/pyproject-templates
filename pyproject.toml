@@ -59,6 +59,5 @@ convention = "google"
 [tool.ruff.format]
 docstring-code-format = true
 
-[tool.pyright]
-reportArgumentType      = false
-reportOptionalSubscript = false
+[tool.ty.terminal]
+output-format = "concise"
