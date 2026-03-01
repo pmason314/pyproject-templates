@@ -23,7 +23,7 @@ repos:
         name: Check for common misspellings in text files
         types_or: [python, rst, markdown]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.14
+    rev: v0.15.4
     hooks:
       - id: ruff
         name: Lint Python code with Ruff
@@ -36,7 +36,7 @@ repos:
         name: Format Python code with Ruff
         types_or: [python, jupyter]
   - repo: https://github.com/fredrikaverpil/creosote
-    rev: v4.1.0
+    rev: v5.0.0
     hooks:
       - id: creosote
         name: Identify unused dependencies with Creosote
