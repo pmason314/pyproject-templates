@@ -3,19 +3,34 @@
 # Usage: curl -sSL https://raw.githubusercontent.com/pmason314/pyproject-templates/main/src/setup.sh -o setup.sh && sh setup.sh
 
 set -e
+
+SETUP_ITEMS=""
+
 cleanup() {
     rm -f .config_setup.py
     rm -f .dependencies.txt
     rm -f "$0"
 }
 
+interrupt_cleanup() {
+    printf "\n${YELLOW}Setup interrupted. Cleaning up...${NC}\n"
+    # shellcheck disable=SC2086
+    for item in $SETUP_ITEMS; do
+        rm -rf "$item"
+    done
+    trap - EXIT
+    cleanup
+    exit 130
+}
+
 trap cleanup EXIT
+trap interrupt_cleanup INT
 
 # Output colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m'
+RED=$(printf '\033[0;31m')
+GREEN=$(printf '\033[0;32m')
+YELLOW=$(printf '\033[1;33m')
+NC=$(printf '\033[0m')
 
 echo "${GREEN}=== Python Project Setup ===${NC}"
 echo ""
@@ -39,7 +54,11 @@ file_count=$(find . -maxdepth 1 ! -name '.' ! -name 'setup.sh' | wc -l)
 
 if [ "$file_count" -eq 0 ] && [ ! -f "pyproject.toml" ]; then
     echo "${YELLOW}Empty directory detected. Initializing new Python project...${NC}"
+    BEFORE_INIT=$(find . -maxdepth 1 ! -name '.' ! -name 'setup.sh' | sort)
     uv init
+    AFTER_INIT=$(find . -maxdepth 1 ! -name '.' ! -name 'setup.sh' | sort)
+    NEW_INIT_FILES=$(comm -13 <(echo "$BEFORE_INIT") <(echo "$AFTER_INIT") | tr '\n' ' ')
+    SETUP_ITEMS="$SETUP_ITEMS $NEW_INIT_FILES"
     echo "${GREEN}✓ Project initialized${NC}"
     echo ""
 fi
@@ -121,15 +140,18 @@ DEPENDENCIES_URL="$TEMPLATE_BASE_URL/dependencies.txt"
 
 echo "${GREEN}Running project setup...${NC}"
 uv venv
+SETUP_ITEMS="$SETUP_ITEMS .venv"
 
 # Download and install dependencies from config file
 curl -sSL "$DEPENDENCIES_URL" -o .dependencies.txt
 DEPENDENCIES=$(cat .dependencies.txt | tr '\n' ' ')
 
+[ -f "uv.lock" ] || SETUP_ITEMS="$SETUP_ITEMS uv.lock"
 uv add --dev $DEPENDENCIES >/dev/null 2>&1
 uv run pre-commit install >/dev/null 2>&1
 echo "${GREEN}✓ Initial project dependencies installed${NC}"
 echo ""
+{ [ "$LICENSE" != "None" ] && [ ! -f "LICENSE" ]; } && SETUP_ITEMS="$SETUP_ITEMS LICENSE"
 uv run .config_setup.py "$AUTHOR_NAME" "$AUTHOR_EMAIL" "$LICENSE" "$PROJECT_TYPE"
 uvx taplo fmt pyproject.toml -o align_entries=true -o indent_string="    " >/dev/null 2>&1
 echo "${GREEN}✓ Setup complete!${NC}"
