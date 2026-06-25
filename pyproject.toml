@@ -15,10 +15,10 @@ dependencies = []
 
 [dependency-groups]
 dev = [
-    "ipykernel>=7.0.1",
-    "pre-commit>=4.3.0",
-    "ruff>=0.14.1",
-    "ty>=0.0.7",
+    "ipykernel>=7.3.0",
+    "pre-commit>=4.6.0",
+    "ruff>=0.15.19",
+    "ty>=0.0.53",
 ]
 
 [tool.uv]
@@ -47,6 +47,7 @@ ignore = [
     "S607",    # Avoid starting a process with a partial executable path
     "TD002",   # Missing author in TODO comment
     "TRY003",  # Avoid long exception messages outside the exception class
+    "T201",    # Avoid print statements
 ]
 unfixable = []
 
