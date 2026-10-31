@@ -26,17 +26,22 @@ repos:
     rev: v0.16.9
     hooks:
       - id: ruff
-        name: Lint Python code with Ruff
+        name: Lint Python with ruff
         types_or: [ python, jupyter]
         args:
           - --fix
           - --exit-non-zero-on-fix
           - --extend-select=F401
       - id: ruff-format
-        name: Format Python code with Ruff
+        name: Format Python with ruff
         types_or: [python, jupyter]
+  - repo: https://github.com/astral-sh/ty-pre-commit
+    rev: v0.0.94
+    hooks:
+      - id: ty
+        name: Type check Python with ty
   - repo: https://github.com/fredrikaverpil/creosote
     rev: v5.2.0
     hooks:
       - id: creosote
-        name: Identify unused dependencies with Creosote
+        name: Identify unused dependencies with creosote

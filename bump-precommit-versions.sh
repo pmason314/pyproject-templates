@@ -3,7 +3,7 @@
  #  GitHub pre-commit releases apart from the initial `v` (e.g. `v1.2.3` vs. `1.2.3`)
 
 # Pre-commit dependency list
-deps=(pre-commit-hooks codespell ruff creosote)
+deps=(pre-commit-hooks codespell ruff ty creosote)
 pc_paths=(".pre-commit-config.yaml" "src/templates/package/.pre-commit-config.yaml" "src/templates/script/.pre-commit-config.yaml")
 
 for hook in ${deps[@]}
@@ -13,6 +13,9 @@ do
     # ruff-pre-commit doesn't have a PyPI package but instead matches the ruff version number for its releases
     if [ $hook = "ruff" ]; then
         hook="ruff-pre-commit"
+    fi
+    if [ $hook = "ty" ]; then
+        hook="ty-pre-commit"
     fi
     echo "Version $version found for $hook"
     for pc_path in ${pc_paths[@]}
