@@ -23,7 +23,7 @@ repos:
         name: Check for common misspellings in text files
         types_or: [python, rst, markdown]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.9
+    rev: v0.17.3
     hooks:
       - id: ruff
         name: Lint Python with ruff
